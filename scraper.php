@@ -12,10 +12,12 @@
 		$heroStats = array();
 		foreach($html->find('table') as $stats){
 			foreach($stats->find('td') as $td){
+				//echo $ic.' - '.$td.'<br />';
+				$ic++;
 				array_push($data, $td);
 			}
 			$count++;
-			if ($count > 0){break;}
+			if ($count > 8){break;}
 		}
 
 		foreach($data[0]->find('th') as $name){
@@ -85,13 +87,21 @@
 
 		$heroStats['base_attack_time'] = $data[39];
 
+		$roleAndLore = array();
+		foreach($data[75]->find('td') as $row){
+			array_push($roleAndLore, $row);
+		}
+
+		$heroStats['role'] = $roleAndLore[3]->innertext;
+		$heroStats['lore'] = str_replace('<i>', '', str_replace('</i>', '', $roleAndLore[5]->innertext));
+
 		$keys = array_keys($heroStats);
 		echo '{';
 		$cnt = 0;
 		foreach($keys as $key){
 			$cnt++;
-			if($cnt != count($keys)){ echo "'".$key."':'".trim($heroStats[$key])."', ";}
-			else{echo "'".$key."':'".trim($heroStats[$key])."'}<br />";}
+			if($cnt != count($keys)){ echo "'".$key."':'".$heroStats[$key]."', ";}
+			else{echo "'".$key."':'".$heroStats[$key]."'}<br />";}
 
 		}
 	}
